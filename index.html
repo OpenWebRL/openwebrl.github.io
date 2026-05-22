@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OpenWebRL: Demystifying Online Multi-turn Reinforcement Learning for Visual Web Agents</title>
+  <meta name="description" content="OpenWebRL is an open framework for training visual web agents with online multi-turn RL on real websites, achieving state-of-the-art results on Online-Mind2Web, DeepShop, and WebVoyager." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <style>
+    /* ─── Reset ──────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue:       #2563eb;
+      --blue-dark:  #1d4ed8;
+      --blue-light: #eff6ff;
+      --navy:       #1e3a5f;
+      --accent:     #0ea5e9;
+      --teal:       #0d9488;
+      --purple:     #7c3aed;
+      --amber:      #d97706;
+      --green:      #16a34a;
+      --gray-50:    #f8fafc;
+      --gray-100:   #f1f5f9;
+      --gray-200:   #e2e8f0;
+      --gray-300:   #cbd5e1;
+      --gray-400:   #94a3b8;
+      --gray-500:   #64748b;
+      --gray-600:   #475569;
+      --gray-700:   #334155;
+      --gray-800:   #1e293b;
+      --gray-900:   #0f172a;
+      --radius:     12px;
+      --radius-sm:  8px;
+      --shadow:     0 2px 16px rgba(0,0,0,0.07);
+      --shadow-md:  0 4px 24px rgba(0,0,0,0.10);
+      --shadow-lg:  0 12px 40px rgba(0,0,0,0.13);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      color: var(--gray-900);
+      background: #fff;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    img { display: block; max-width: 100%; height: auto; }
+
+    .container      { max-width: 960px;  margin: 0 auto; padding: 0 24px; }
+    .container-wide { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+    section { padding: 72px 0; }
+    section + section { border-top: 1px solid var(--gray-200); }
+
+    h2.section-title {
+      font-size: clamp(1.4rem, 3vw, 1.8rem);
+      font-weight: 700;
+      color: var(--navy);
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    /* ─── Navbar ─────────────────────────────────── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--gray-200);
+      padding: 0 24px;
+    }
+    .nav-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-logo {
+      font-weight: 800;
+      font-size: 1.05rem;
+      color: var(--navy);
+      letter-spacing: -0.02em;
+    }
+    .nav-logo span { color: var(--blue); }
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--gray-600);
+      transition: color 0.15s;
+    }
+    .nav-links a:hover { color: var(--blue); text-decoration: none; }
+    @media (max-width: 600px) { .nav-links { display: none; } }
+
+    /* ─── Hero ───────────────────────────────────── */
+    #hero {
+      background: linear-gradient(155deg, #0b1d3a 0%, #16325e 45%, #1a4a8a 100%);
+      color: #fff;
+      padding: 76px 0 68px;
+      border-bottom: none;
+      position: relative;
+      overflow: hidden;
+    }
+    #hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 55% 45% at 78% 15%, rgba(14,165,233,.22) 0%, transparent 65%),
+        radial-gradient(ellipse 40% 50% at 8%  85%, rgba(37,99,235,.18) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .hero-inner { position: relative; z-index: 1; }
+
+    .venue-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.22);
+      border-radius: 100px;
+      padding: 5px 14px;
+      font-size: .78rem;
+      font-weight: 600;
+      letter-spacing: .05em;
+      color: #bae6fd;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+    }
+
+    #hero h1 {
+      font-size: clamp(1.65rem, 4.2vw, 2.6rem);
+      font-weight: 800;
+      line-height: 1.2;
+      max-width: 840px;
+      margin-bottom: 28px;
+      letter-spacing: -.02em;
+    }
+    #hero h1 .hl {
+      background: linear-gradient(90deg, #38bdf8 0%, #a78bfa 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .authors {
+      font-size: .97rem;
+      color: rgba(255,255,255,.88);
+      line-height: 1.9;
+      margin-bottom: 5px;
+    }
+    .authors sup { font-size: .7em; }
+    .author-note {
+      font-size: .82rem;
+      color: rgba(255,255,255,.55);
+      margin-bottom: 22px;
+    }
+
+    .affiliations {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 24px;
+      margin-bottom: 36px;
+    }
+    .affil {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-size: .88rem;
+      font-weight: 500;
+      color: rgba(255,255,255,.78);
+    }
+    .affil img {
+      height: 20px;
+      filter: brightness(0) invert(1);
+      opacity: .8;
+    }
+
+    .hero-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 22px;
+      border-radius: var(--radius-sm);
+      font-size: .9rem;
+      font-weight: 600;
+      transition: all .18s;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+    .btn-white  { background:#fff; color:var(--navy); }
+    .btn-white:hover { background:#dbeafe; text-decoration:none; }
+    .btn-ghost  { background:transparent; border:1.5px solid rgba(255,255,255,.38); color:#fff; }
+    .btn-ghost:hover { background:rgba(255,255,255,.12); border-color:rgba(255,255,255,.7); text-decoration:none; }
+    .btn-dim    { opacity:.42; cursor:not-allowed; pointer-events:none; }
+
+    /* ─── Stat strip ─────────────────────────────── */
+    #stats {
+      background: var(--gray-50);
+      padding: 44px 0;
+      border-bottom: 1px solid var(--gray-200);
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 20px;
+    }
+    .stat-card {
+      background: #fff;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius);
+      padding: 22px 18px;
+      text-align: center;
+      box-shadow: var(--shadow);
+      transition: transform .18s, box-shadow .18s;
+    }
+    .stat-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+    .stat-num {
+      font-size: 2.3rem;
+      font-weight: 800;
+      color: var(--blue);
+      line-height: 1;
+      letter-spacing: -.03em;
+      margin-bottom: 6px;
+    }
+    .stat-num sup { font-size: 1rem; font-weight: 700; vertical-align: super; }
+    .stat-label {
+      font-size: .8rem;
+      font-weight: 700;
+      color: var(--gray-500);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+    .stat-sub {
+      font-size: .76rem;
+      color: var(--gray-400);
+      margin-top: 4px;
+    }
+
+    /* ─── Abstract ───────────────────────────────── */
+    #abstract p {
+      font-size: 1.02rem;
+      color: var(--gray-700);
+      max-width: 820px;
+      margin: 0 auto 20px;
+      line-height: 1.88;
+    }
+    #abstract p:last-child { margin-bottom: 0; }
+
+    /* ─── Figure / image ─────────────────────────── */
+    .fig-wrap {
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius);
+      padding: 24px 20px 18px;
+    }
+    .fig-wrap img { border-radius: var(--radius-sm); width: 100%; }
+    .fig-caption {
+      font-size: .87rem;
+      color: var(--gray-500);
+      line-height: 1.6;
+      text-align: center;
+      margin-top: 14px;
+      max-width: 780px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .fig-caption strong { color: var(--gray-700); }
+
+    /* ─── Method cards ───────────────────────────── */
+    .method-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+    .mc {
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius);
+      padding: 26px 22px;
+      background: var(--gray-50);
+      transition: box-shadow .18s;
+    }
+    .mc:hover { box-shadow: var(--shadow-md); }
+    .mc-icon {
+      width: 42px; height: 42px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem;
+      margin-bottom: 14px;
+    }
+    .mc h3 { font-size: .97rem; font-weight: 700; color: var(--navy); margin-bottom: 10px; }
+    .mc p  { font-size: .88rem; color: var(--gray-600); line-height: 1.65; }
+
+    /* ─── Two-col figures ────────────────────────── */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    @media (max-width: 640px) { .two-col { grid-template-columns: 1fr; } }
+
+    /* ─── Results table ──────────────────────────── */
+    .table-scroll { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--gray-200); box-shadow: var(--shadow); }
+    table { width: 100%; border-collapse: collapse; font-size: .86rem; }
+    thead tr { background: var(--navy); color: #fff; }
+    th { padding: 12px 14px; font-weight: 600; text-align: center; white-space: nowrap; }
+    th:first-child { text-align: left; min-width: 220px; }
+    td { padding: 10px 14px; text-align: center; border-bottom: 1px solid var(--gray-200); color: var(--gray-800); }
+    td:first-child { text-align: left; }
+    tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: var(--gray-50); }
+    .grp td { background: var(--gray-100); font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--gray-500); padding: 7px 14px; }
+    .ours { background: #eff6ff !important; }
+    .ours td { font-weight: 600; }
+    .best { font-weight: 800; color: var(--blue); }
+    .second { text-decoration: underline; }
+
+    /* ─── Findings ───────────────────────────────── */
+    .findings-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+      gap: 20px;
+    }
+    .finding {
+      border-left: 3px solid var(--blue);
+      padding-left: 18px;
+    }
+    .finding h4 { font-weight: 700; color: var(--navy); font-size: .97rem; margin-bottom: 7px; }
+    .finding p  { font-size: .88rem; color: var(--gray-600); line-height: 1.65; }
+
+    /* ─── Case studies ───────────────────────────── */
+    .case-img { border-radius: var(--radius); border: 1px solid var(--gray-200); overflow: hidden; }
+    .case-img img { width: 100%; }
+    .case-caption { font-size: .84rem; color: var(--gray-500); margin-top: 10px; text-align: center; line-height: 1.55; }
+
+    /* ─── BibTeX ─────────────────────────────────── */
+    #bibtex { background: var(--gray-50); }
+    .bib-block {
+      background: var(--gray-900);
+      color: #e2e8f0;
+      border-radius: var(--radius);
+      padding: 28px 28px 28px 32px;
+      font-family: 'JetBrains Mono', 'Fira Code', monospace;
+      font-size: .81rem;
+      line-height: 1.75;
+      overflow-x: auto;
+      position: relative;
+    }
+    .copy-btn {
+      position: absolute; top: 14px; right: 14px;
+      background: rgba(255,255,255,.09);
+      border: 1px solid rgba(255,255,255,.18);
+      color: var(--gray-400);
+      border-radius: 6px;
+      padding: 4px 12px;
+      font-size: .76rem;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: background .15s;
+    }
+    .copy-btn:hover { background: rgba(255,255,255,.18); color: #e2e8f0; }
+    .bk  { color: #38bdf8; }
+    .bf  { color: #a5f3fc; }
+    .bv  { color: #bbf7d0; }
+    .bb  { color: var(--gray-400); }
+
+    /* ─── Footer ─────────────────────────────────── */
+    footer {
+      background: var(--gray-800);
+      color: var(--gray-400);
+      text-align: center;
+      padding: 32px 24px;
+      font-size: .84rem;
+      line-height: 1.85;
+    }
+    footer a { color: #93c5fd; }
+
+    @media (max-width: 640px) {
+      section { padding: 52px 0; }
+      #hero { padding: 56px 0 52px; }
+      .bib-block { padding: 20px 16px; font-size: .74rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ NAVBAR ══════════════════════════════════════════ -->
+<nav>
+  <div class="nav-inner">
+    <span class="nav-logo">Open<span>Web</span>RL</span>
+    <ul class="nav-links">
+      <li><a href="#abstract">Abstract</a></li>
+      <li><a href="#method">Method</a></li>
+      <li><a href="#results">Results</a></li>
+      <li><a href="#findings">Findings</a></li>
+      <li><a href="#bibtex">BibTeX</a></li>
+    </ul>
+  </div>
+</nav>
+
+
+<!-- ══ HERO ════════════════════════════════════════════ -->
+<section id="hero">
+  <div class="container hero-inner">
+
+
+    <h1>
+      <span class="hl">OpenWebRL</span>: Demystifying Online<br>
+      Multi-turn Reinforcement Learning<br>
+      for Visual Web Agents
+    </h1>
+
+    <p class="authors">
+      Rui Yang<sup>1*†</sup>,&ensp;Qianhui Wu<sup>2*‡</sup>,&ensp;Yuxi Chen<sup>1</sup>,&ensp;Hao Bai<sup>1</sup>,&ensp;Wenlin Yao<sup>2</sup>,&ensp;Hao Cheng<sup>2</sup>,<br>
+      Baolin Peng<sup>2</sup>,&ensp;Huan Zhang<sup>1</sup>,&ensp;Tong Zhang<sup>1</sup>,&ensp;Jianfeng Gao<sup>2</sup>
+    </p>
+    <p class="author-note">
+      * Equal contribution&ensp;·&ensp;† Project lead (UIUC)&ensp;·&ensp;‡ Project lead (Microsoft)
+    </p>
+
+    <div class="affiliations">
+      <div class="affil">
+        <img src="static/logos/UIUC-Symbol-2.png" alt="UIUC" />
+        <span><sup>1</sup> University of Illinois Urbana-Champaign</span>
+      </div>
+      <div class="affil">
+        <img src="static/logos/microsoft-logo-microsoft-icon-transparent-free-png.png" alt="Microsoft" />
+        <span><sup>2</sup> Microsoft Research</span>
+      </div>
+    </div>
+
+    <div class="hero-buttons">
+      <a class="btn btn-white btn-dim" href="#">
+        <i class="fa-regular fa-file-pdf"></i> Paper
+      </a>
+      <a class="btn btn-ghost btn-dim" href="#">
+        <i class="fa-brands fa-github"></i> Code
+      </a>
+      <a class="btn btn-ghost btn-dim" href="#">
+        <i class="fa-solid fa-database"></i> Data
+      </a>
+      <a class="btn btn-ghost btn-dim" href="#">
+        <i class="fa-solid fa-cube"></i> Models
+      </a>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ══ STATS STRIP ═════════════════════════════════════ -->
+<div id="stats">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-num">67.0<sup>%</sup></div>
+        <div class="stat-label">Online-Mind2Web</div>
+        <div class="stat-sub">+32.9 pts over FARA-7B</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">64.0<sup>%</sup></div>
+        <div class="stat-label">DeepShop</div>
+        <div class="stat-sub">+37.8 pts over FARA-7B</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">74.1<sup>%</sup></div>
+        <div class="stat-label">WebVoyager</div>
+        <div class="stat-sub">Best open-source @ 30 steps</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">0.4K</div>
+        <div class="stat-label">Init Trajectories</div>
+        <div class="stat-sub">vs. 278K in MolmoWeb</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">4B</div>
+        <div class="stat-label">Model Size</div>
+        <div class="stat-sub">Beats Qwen3-VL-235B</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ TEASER ══════════════════════════════════════════ -->
+<section id="teaser">
+  <div class="container">
+    <h2 class="section-title">Performance Overview</h2>
+    <div class="fig-wrap">
+      <img src="static/images/owrl_open_web_success_rates_with_size_final_simple.png"
+           alt="Performance comparison on three live-web benchmarks" />
+      <p class="fig-caption">
+        <strong>Figure 1.</strong>
+        Performance comparison on three online web benchmarks: Online-Mind2Web (2025.04), DeepShop (2025.06), and WebVoyager (2024.01).
+        OpenWebRL-4B achieves new open-source state of the art on all three benchmarks, training with only a 4B backbone and 2.2K tasks,
+        while remaining competitive with proprietary systems such as OpenAI CUA and Gemini CUA.
+      </p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ ABSTRACT ════════════════════════════════════════ -->
+<section id="abstract">
+  <div class="container">
+    <h2 class="section-title">Abstract</h2>
+    <p>
+      Building capable visual web agents requires long-horizon reasoning, precise grounding, and robust interaction with dynamic real-world websites.
+      Despite rapid progress, the strongest systems remain largely proprietary, while open agents still depend heavily on supervised post-training
+      over large collections of curated web trajectories. This dependence creates a major scalability bottleneck: high-quality demonstrations are
+      expensive to collect, and static datasets offer limited coverage of the diverse, ever-changing open web.
+    </p>
+    <p>
+      We introduce <strong>OpenWebRL</strong>, an open framework for training visual web agents with online multi-turn RL on real websites.
+      OpenWebRL covers the full training pipeline, including scalable live-browser infrastructure, supervised initialization, multimodal context
+      management, trajectory-level success judging, and efficient multi-turn policy optimization.
+    </p>
+    <p>
+      Using this framework, we train <strong>OpenWebRL-4B</strong>, which establishes a new open-source state of the art on challenging live-web benchmarks.
+      With only 0.4K initialization trajectories and 2.2K open-ended RL training tasks, OpenWebRL-4B achieves 67.0% success on Online-Mind2Web and 64.0%
+      on DeepShop, outperforming prior open agents of similar or larger scale and remaining competitive with proprietary systems including OpenAI CUA and Gemini CUA.
+      Beyond strong benchmark performance, we systematically study the key design choices that make online RL effective for visual web agents,
+      and analyze how RL improves agentic reasoning during training.
+    </p>
+  </div>
+</section>
+
+
+<!-- ══ METHOD ══════════════════════════════════════════ -->
+<section id="method">
+  <div class="container">
+    <h2 class="section-title">Framework</h2>
+
+    <div class="method-grid">
+
+      <div class="mc">
+        <div class="mc-icon" style="background:#dbeafe; color:#1d4ed8;">
+          <i class="fa-solid fa-rocket"></i>
+        </div>
+        <h3>Supervised Warm Start</h3>
+        <p>
+          Warm-starts the policy with only <strong>0.4K high-quality trajectories</strong> collected from Qwen3-VL-235B,
+          placing it in a productive exploration regime before online RL — eliminating cold-start instability with minimal data.
+        </p>
+      </div>
+
+      <div class="mc">
+        <div class="mc-icon" style="background:#ccfbf1; color:#0d9488;">
+          <i class="fa-solid fa-globe"></i>
+        </div>
+        <h3>Agent Harness</h3>
+        <p>
+          A fault-tolerant live-browser environment with <strong>13 atomic browser tools</strong>, a multi-tool-call interface,
+          and textual environment feedback — making open-web rollouts reliable and efficient at scale.
+        </p>
+      </div>
+
+      <div class="mc">
+        <div class="mc-icon" style="background:#ede9fe; color:#7c3aed;">
+          <i class="fa-solid fa-layer-group"></i>
+        </div>
+        <h3>Multimodal Context Management</h3>
+        <p>
+          Retains only the <strong>most recent screenshot (K=1)</strong> for visual grounding while preserving full reasoning traces
+          as long-horizon textual memory — balancing performance and training cost.
+        </p>
+      </div>
+
+      <div class="mc">
+        <div class="mc-icon" style="background:#fef3c7; color:#d97706;">
+          <i class="fa-solid fa-brain"></i>
+        </div>
+        <h3>Multimodal Multi-turn GRPO</h3>
+        <p>
+          MM-GRPO propagates a single trajectory-level reward to all assistant tokens across all turns.
+          Combined with <strong>asymmetric clipping</strong> and trajectory-level dynamic sampling for stable optimization.
+        </p>
+      </div>
+
+      <div class="mc">
+        <div class="mc-icon" style="background:#dcfce7; color:#16a34a;">
+          <i class="fa-solid fa-scale-balanced"></i>
+        </div>
+        <h3>OpenWebRL-Judge-8B</h3>
+        <p>
+          A distilled 8B judge trained on 12.5K rollouts achieves <strong>89.8% accuracy / 92.1% F1</strong> against GPT-4.1,
+          matching proprietary quality while cutting ~$545 per training run.
+        </p>
+      </div>
+
+      <div class="mc">
+        <div class="mc-icon" style="background:#fce7f3; color:#be185d;">
+          <i class="fa-solid fa-stairs"></i>
+        </div>
+        <h3>Rollout-Length Curriculum</h3>
+        <p>
+          Trains first with 15-step horizons then extends to 30 steps — short horizons stabilize early exploration,
+          longer horizons enable the policy to handle tasks requiring extended interactions.
+        </p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ LEARNING DYNAMICS ════════════════════════════════ -->
+<section id="dynamics">
+  <div class="container">
+    <h2 class="section-title">Learning Dynamics</h2>
+
+    <div class="fig-wrap" style="margin-bottom: 28px;">
+      <img src="static/images/raw_success_rate_curves_sft_base.png"
+           alt="MM-GRPO training curves: SFT vs base initialization" />
+      <p class="fig-caption">
+        <strong>Figure 2.</strong>
+        Comparison of MM-GRPO training from SFT and base-model initializations.
+        (a) Average training reward. (b) Average response length.
+        (c) Evaluation success rate (excl. aborted). (d) Success rate improvement by difficulty split on Online-Mind2Web.
+        SFT initialization maintains a consistent ~10% advantage throughout training and yields much larger gains on hard tasks.
+      </p>
+    </div>
+
+    <div class="fig-wrap">
+      <img src="static/images/complete_response_and_proxy_statistics_strict.png"
+           alt="Response length and reasoning pattern analysis during MM-GRPO training" />
+      <p class="fig-caption">
+        <strong>Figure 3.</strong>
+        Diagnosing response-length growth during MM-GRPO.
+        (a) Trajectory length and average interaction steps.
+        (b) Step-level proxy presence rates.
+        (c) Average step-level response length conditioned on reasoning pattern type.
+        MM-GRPO allocates additional reasoning selectively to key steps rather than expanding all responses uniformly.
+      </p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ RESULTS TABLE ════════════════════════════════════ -->
+<section id="results">
+  <div class="container-wide">
+    <h2 class="section-title">Main Results</h2>
+    <p style="text-align:center; color:var(--gray-500); font-size:.9rem; margin-top:-26px; margin-bottom:32px;">
+      Official success rates (%) on three live-web benchmarks.
+      &nbsp;*&nbsp;from FARA &nbsp;·&nbsp; † from MolmoWeb &nbsp;·&nbsp;
+      <strong>Bold</strong> = best &nbsp;·&nbsp; <u>Underline</u> = second best.
+    </p>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>System</th>
+            <th># Steps</th>
+            <th># Tasks</th>
+            <th>WebVoyager</th>
+            <th>Online-Mind2Web</th>
+            <th>DeepShop</th>
+            <th style="background:#162d52;">Average</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="grp"><td colspan="7">Proprietary Models</td></tr>
+          <tr><td>GPT-5 (Axtree) †</td>         <td>30</td>  <td>—</td>          <td>70.6</td> <td>41.9</td> <td>40.7</td> <td>51.1</td></tr>
+          <tr><td>Gemini-3-Flash (Axtree) †</td> <td>30</td>  <td>—</td>          <td>74.4</td> <td>34.8</td> <td>45.1</td> <td>51.4</td></tr>
+          <tr><td>Gemini-3-Flash (Axtree) †</td> <td>100</td> <td>—</td>          <td>85.6</td> <td>44.8</td> <td>55.3</td> <td>61.9</td></tr>
+          <tr><td>GPT-4o (SoM) *</td>            <td>100</td> <td>—</td>          <td>65.1</td> <td>34.6</td> <td>16.0</td> <td>38.6</td></tr>
+          <tr><td>o3 (SoM) *</td>                <td>100</td> <td>—</td>          <td>79.3</td> <td>55.4</td> <td>49.7</td> <td>61.5</td></tr>
+          <tr><td>GPT-5 (SoM) *</td>             <td>100</td> <td>—</td>          <td class="best">90.6</td> <td>57.7</td> <td>49.1</td> <td>65.8</td></tr>
+          <tr><td>OpenAI CUA *</td>              <td>100</td> <td>—</td>          <td>70.9</td> <td>58.3</td> <td>24.7</td> <td>51.3</td></tr>
+          <tr><td>Gemini CUA †</td>              <td>100</td> <td>—</td>          <td class="second">88.6</td> <td>57.3</td> <td>62.0</td> <td class="best">69.3</td></tr>
+
+          <tr class="grp"><td colspan="7">Open-Source Models</td></tr>
+          <tr><td>Holo1-7B †</td>                <td>30</td>  <td>&gt;15.6K</td>  <td>55.4</td> <td>—</td>   <td>—</td>   <td>—</td></tr>
+          <tr><td>UI-TARS-1.5-7B *</td>          <td>100</td> <td>—</td>          <td>66.4</td> <td>31.3</td> <td>11.6</td> <td>36.4</td></tr>
+          <tr><td>GLM-4.1V-9B-Thinking *</td>    <td>100</td> <td>—</td>          <td>66.8</td> <td>33.9</td> <td>32.0</td> <td>44.2</td></tr>
+          <tr><td>FARA-7B *</td>                 <td>100</td> <td>&gt;123.2K</td> <td>73.5</td> <td>34.1</td> <td>26.2</td> <td>44.6</td></tr>
+          <tr><td>MolmoWeb-4B †</td>             <td>100</td> <td>&gt;278.5K</td> <td>75.2</td> <td>31.3</td> <td>35.6</td> <td>47.4</td></tr>
+          <tr><td>MolmoWeb-8B †</td>             <td>100</td> <td>&gt;278.5K</td> <td>78.2</td> <td>35.3</td> <td>42.3</td> <td>51.9</td></tr>
+          <tr><td>Qwen3-VL-4B-Thinking</td>      <td>30</td>  <td>—</td>          <td>52.6</td> <td>32.0</td> <td>33.3</td> <td>39.3</td></tr>
+          <tr><td>Qwen3-VL-235B-A22B-Thinking</td><td>30</td> <td>—</td>          <td>66.4</td> <td>63.7</td> <td>56.7</td> <td>62.3</td></tr>
+
+          <tr class="grp"><td colspan="7">Ours (Qwen3-VL-4B Backbone)</td></tr>
+          <tr class="ours"><td><strong>OpenWebRL-4B-SFT</strong></td>           <td>30</td> <td>0.4K</td> <td>60.2</td>              <td>47.0</td>              <td>48.7</td>              <td>52.0</td></tr>
+          <tr class="ours"><td><strong>OpenWebRL-4B</strong></td>               <td>30</td> <td>2.2K</td> <td>74.1</td>              <td class="second">67.0</td><td class="second">64.0</td><td class="second">68.4</td></tr>
+          <tr class="ours"><td><strong>OpenWebRL-4B w/ Judge-8B</strong></td>   <td>30</td> <td>2.2K</td> <td>68.9</td>              <td class="best">67.3</td>  <td class="best">68.7</td>  <td>68.3</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ ABLATIONS ═══════════════════════════════════════ -->
+<section id="ablations">
+  <div class="container">
+    <h2 class="section-title">Ablations &amp; Analysis</h2>
+
+    <div class="two-col" style="margin-bottom: 28px;">
+      <div class="fig-wrap">
+        <img src="static/images/ablations_dynamicsampling_ppoepoch.png"
+             alt="Ablation: dynamic sampling and PPO epochs" />
+        <p class="fig-caption">
+          <strong>Figure 4.</strong>
+          Ablation on (a–b) trajectory-level dynamic sampling and (c–d) PPO epochs.
+          Dynamic sampling stabilizes training; 2 PPO epochs give the best balance.
+        </p>
+      </div>
+      <div class="fig-wrap">
+        <img src="static/images/raw_success_rate_curves_judge_rl.png"
+             alt="RL training with different judges" />
+        <p class="fig-caption">
+          <strong>Figure 5.</strong>
+          RL training curves with GPT-4.1, OpenWebRL-Judge-8B, and the base VLM as judge.
+          The distilled judge matches GPT-4.1 dynamics while a naive base VLM causes reward hacking.
+        </p>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="fig-wrap">
+        <img src="static/images/raw_success_rate_curves_rejectsampling.png"
+             alt="MM-GRPO vs online filtered BC baseline" />
+        <p class="fig-caption">
+          <strong>Figure 6.</strong>
+          MM-GRPO vs. online filtered behavior cloning (BC).
+          Pure imitation of online successes collapses in evaluation; MM-GRPO maintains stable improvement.
+        </p>
+      </div>
+      <div class="fig-wrap">
+        <img src="static/images/error_analysis_pie_chart.png"
+             alt="Error analysis distribution" />
+        <p class="fig-caption">
+          <strong>Figure 7.</strong>
+          Distribution of failure modes across 100 manually inspected trajectories on Online-Mind2Web.
+          51% stem from live-web instability; 27% from reasoning/knowledge limits.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ KEY FINDINGS ════════════════════════════════════ -->
+<section id="findings">
+  <div class="container">
+    <h2 class="section-title">Key Findings</h2>
+    <div class="findings-grid">
+
+      <div class="finding" style="border-color:var(--blue);">
+        <h4>SFT warm-start is essential for hard tasks</h4>
+        <p>SFT init gives +10% eval advantage throughout RL training, with +22.3 pts on hard tasks. RL from the base model improves hard tasks by only +2.3 pts.</p>
+      </div>
+
+      <div class="finding" style="border-color:var(--teal);">
+        <h4>Reasoning traces serve as long-horizon memory</h4>
+        <p>Removing historical reasoning drops performance by up to 23.7 pts on Online-Mind2Web — the single largest ablation gap in our study.</p>
+      </div>
+
+      <div class="finding" style="border-color:var(--purple);">
+        <h4>Rollout-length curriculum beats fixed budgets</h4>
+        <p>15-step → 30-step curriculum outperforms using either budget alone. Short horizons stabilize early exploration; long horizons handle complex tasks.</p>
+      </div>
+
+      <div class="finding" style="border-color:var(--amber);">
+        <h4>RL drives targeted, not uniform reasoning growth</h4>
+        <p>History summarization (+48% length) and blocker diagnosis (+61%) patterns grow most. Non-proxy steps stay nearly stable — the model learns <em>when</em> to reason deeply.</p>
+      </div>
+
+      <div class="finding" style="border-color:var(--green);">
+        <h4>Distilled judge matches GPT-4.1 at a fraction of the cost</h4>
+        <p>OpenWebRL-Judge-8B achieves 89.8% accuracy / 92.1% F1, saving ~$545 per training run while producing identical RL dynamics to GPT-4.1 supervision.</p>
+      </div>
+
+      <div class="finding" style="border-color:#be185d;">
+        <h4>Textual environment feedback is indispensable</h4>
+        <p>Removing per-step execution feedback costs 5–8 pts across benchmarks. Feedback lets the agent distinguish silent failures from successes without relying on visual diff.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ CASE STUDIES ════════════════════════════════════ -->
+<section id="cases">
+  <div class="container">
+    <h2 class="section-title">Case Studies</h2>
+
+    <div style="margin-bottom: 28px;">
+      <div class="case-img">
+        <img src="static/images/case_study_birkenstock_clogs_14steps.png"
+             alt="14-step trajectory: Birkenstock men's clogs shopping task" />
+      </div>
+      <p class="case-caption">
+        <strong>Task:</strong> "Add the most top-selling Birkenstock's men clogs in brown, size 10–10.5 to my cart." (14 steps)
+      </p>
+    </div>
+
+    <div>
+      <div class="case-img">
+        <img src="static/images/case_study_ikea_sofa_19steps.png"
+             alt="19-step trajectory: IKEA sofa shopping task" />
+      </div>
+      <p class="case-caption">
+        <strong>Task:</strong> "Add the cheapest black sofa with at least three seats, a leather finish, and at least four stars to my cart." (19 steps)
+      </p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ BIBTEX ═══════════════════════════════════════════ -->
+<section id="bibtex">
+  <div class="container">
+    <h2 class="section-title">BibTeX</h2>
+    <div class="bib-block" id="bib-code">
+      <button class="copy-btn" id="copy-btn" onclick="copyBib()">
+        <i class="fa-regular fa-copy"></i> Copy
+      </button>
+<span class="bb">@article{</span><span class="bk">yang2026openwebrl</span><span class="bb">,</span>
+  <span class="bf">title</span>   = <span class="bb">{</span><span class="bv">OpenWebRL: Demystifying Online Multi-turn Reinforcement Learning for Visual Web Agents</span><span class="bb">},</span>
+  <span class="bf">author</span>  = <span class="bb">{</span><span class="bv">Rui Yang and Qianhui Wu and Yuxi Chen and Hao Bai and Wenlin Yao and Hao Cheng and Baolin Peng and Huan Zhang and Tong Zhang and Jianfeng Gao</span><span class="bb">},</span>
+  <span class="bf">journal</span> = <span class="bb">{</span><span class="bv">arXiv preprint</span><span class="bb">},</span>
+  <span class="bf">year</span>    = <span class="bb">{</span><span class="bv">2026</span><span class="bb">}</span>
+<span class="bb">}</span>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ FOOTER ══════════════════════════════════════════ -->
+<footer>
+  <p>
+    OpenWebRL &nbsp;·&nbsp;
+    University of Illinois Urbana-Champaign &amp; Microsoft Research &nbsp;·&nbsp; 2026
+  </p>
+  <p style="margin-top:6px;">
+    Questions? Contact
+    <a href="mailto:yangrui.thu2015@gmail.com">yangrui.thu2015@gmail.com</a>.
+    &nbsp;·&nbsp;
+    Website design inspired by <a href="https://nerfies.github.io" target="_blank" rel="noopener">Nerfies</a>.
+  </p>
+</footer>
+
+
+<script>
+  function copyBib() {
+    const text = `@article{yang2026openwebrl,
+  title   = {OpenWebRL: Demystifying Online Multi-turn Reinforcement Learning for Visual Web Agents},
+  author  = {Rui Yang and Qianhui Wu and Yuxi Chen and Hao Bai and Wenlin Yao and Hao Cheng and Baolin Peng and Huan Zhang and Tong Zhang and Jianfeng Gao},
+  journal = {arXiv preprint},
+  year    = {2026}
+}`;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.getElementById('copy-btn');
+      btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+      setTimeout(() => { btn.innerHTML = '<i class="fa-regular fa-copy"></i> Copy'; }, 2200);
+    });
+  }
+</script>
+
+</body>
+</html>
