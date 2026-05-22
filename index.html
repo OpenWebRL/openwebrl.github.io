@@ -346,10 +346,65 @@
     .finding h4 { font-weight: 700; color: var(--navy); font-size: .97rem; margin-bottom: 7px; }
     .finding p  { font-size: .88rem; color: var(--gray-600); line-height: 1.65; }
 
-    /* ─── Case studies ───────────────────────────── */
-    .case-img { border-radius: var(--radius); border: 1px solid var(--gray-200); overflow: hidden; }
-    .case-img img { width: 100%; }
-    .case-caption { font-size: .84rem; color: var(--gray-500); margin-top: 10px; text-align: center; line-height: 1.55; }
+    /* ─── Case studies carousel ─────────────────── */
+    .carousel {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius);
+      background: var(--gray-50);
+    }
+    .carousel-track {
+      display: flex;
+      transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .carousel-slide {
+      min-width: 100%;
+      padding: 24px 20px 18px;
+    }
+    .carousel-slide img {
+      width: 100%;
+      border-radius: var(--radius-sm);
+    }
+    .case-caption {
+      font-size: .87rem;
+      color: var(--gray-500);
+      margin-top: 14px;
+      text-align: center;
+      line-height: 1.6;
+    }
+    .carousel-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      padding: 14px 0 18px;
+    }
+    .carousel-btn {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      border: 1.5px solid var(--gray-300);
+      background: #fff;
+      color: var(--gray-600);
+      font-size: .95rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all .18s;
+      box-shadow: var(--shadow);
+    }
+    .carousel-btn:hover { border-color: var(--blue); color: var(--blue); box-shadow: var(--shadow-md); }
+    .carousel-dots {
+      display: flex;
+      gap: 8px;
+    }
+    .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--gray-300);
+      cursor: pointer;
+      transition: background .2s, transform .2s;
+    }
+    .dot.active { background: var(--blue); transform: scale(1.25); }
 
     /* ─── BibTeX ─────────────────────────────────── */
     #bibtex { background: var(--gray-50); }
@@ -806,25 +861,41 @@
   <div class="container">
     <h2 class="section-title">Case Studies</h2>
 
-    <div style="margin-bottom: 28px;">
-      <div class="case-img">
-        <img src="static/images/case_study_birkenstock_clogs_14steps.png"
-             alt="14-step trajectory: Birkenstock men's clogs shopping task" />
+    <div class="carousel" id="case-carousel">
+      <div class="carousel-track" id="carousel-track">
+
+        <div class="carousel-slide">
+          <img src="static/images/case_study_birkenstock_clogs_14steps.png"
+               alt="14-step trajectory: Birkenstock men's clogs shopping task" />
+          <p class="case-caption">
+            <strong>Case 1:</strong> "Add the most top-selling Birkenstock's men clogs in brown, size 10–10.5 to my cart." (14 steps)
+          </p>
+        </div>
+
+        <div class="carousel-slide">
+          <img src="static/images/case_study_ikea_sofa_19steps.png"
+               alt="19-step trajectory: IKEA sofa shopping task" />
+          <p class="case-caption">
+            <strong>Case 2:</strong> "Add the cheapest black sofa with at least three seats, a leather finish, and at least four stars to my cart." (19 steps)
+          </p>
+        </div>
+
       </div>
-      <p class="case-caption">
-        <strong>Task:</strong> "Add the most top-selling Birkenstock's men clogs in brown, size 10–10.5 to my cart." (14 steps)
-      </p>
     </div>
 
-    <div>
-      <div class="case-img">
-        <img src="static/images/case_study_ikea_sofa_19steps.png"
-             alt="19-step trajectory: IKEA sofa shopping task" />
+    <div class="carousel-controls">
+      <button class="carousel-btn" id="prev-btn" onclick="moveCarousel(-1)" aria-label="Previous">
+        <i class="fa-solid fa-chevron-left"></i>
+      </button>
+      <div class="carousel-dots">
+        <div class="dot active" onclick="goToSlide(0)"></div>
+        <div class="dot"        onclick="goToSlide(1)"></div>
       </div>
-      <p class="case-caption">
-        <strong>Task:</strong> "Add the cheapest black sofa with at least three seats, a leather finish, and at least four stars to my cart." (19 steps)
-      </p>
+      <button class="carousel-btn" id="next-btn" onclick="moveCarousel(1)" aria-label="Next">
+        <i class="fa-solid fa-chevron-right"></i>
+      </button>
     </div>
+
   </div>
 </section>
 
@@ -864,6 +935,28 @@
 
 
 <script>
+  /* ── Carousel ── */
+  let currentSlide = 0;
+  const totalSlides = 2;
+
+  function updateCarousel() {
+    document.getElementById('carousel-track').style.transform =
+      `translateX(-${currentSlide * 100}%)`;
+    document.querySelectorAll('.dot').forEach((d, i) =>
+      d.classList.toggle('active', i === currentSlide));
+  }
+
+  function moveCarousel(dir) {
+    currentSlide = (currentSlide + dir + totalSlides) % totalSlides;
+    updateCarousel();
+  }
+
+  function goToSlide(idx) {
+    currentSlide = idx;
+    updateCarousel();
+  }
+
+  /* ── BibTeX copy ── */
   function copyBib() {
     const text = `@article{yang2026openwebrl,
   title   = {OpenWebRL: Demystifying Online Multi-turn Reinforcement Learning for Visual Web Agents},
