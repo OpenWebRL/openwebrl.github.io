@@ -662,7 +662,10 @@
         </div>
         <h3>Multimodal Multi-turn GRPO</h3>
         <p>
-          MM-GRPO propagates a single trajectory-level reward to all assistant tokens across all turns.
+          MM-GRPO propagates a single trajectory-level reward to all assistant tokens across all turns,
+          using the <strong>same context-management procedure</strong> for both rollout and optimization.
+          The loss is computed <strong>turn-wise</strong> (per-turn token normalization without a 1/T<sub>i</sub> trajectory factor),
+          preserving the learning signal for longer, harder tasks.
           Combined with <strong>asymmetric clipping</strong> and trajectory-level dynamic sampling for stable optimization.
         </p>
       </div>
