@@ -830,11 +830,14 @@
       <img src="static/images/error_analysis_pie_chart.png"
            alt="Error analysis distribution" />
       <p class="fig-caption">
-        Distribution of failure modes across 100 manually inspected trajectories on Online-Mind2Web.
+        Distribution of failure modes based on manual inspection of 100 failed trajectories on Online-Mind2Web,
+        evaluated <em>without</em> Browser-Use Stealth Browser service (raw open-web setting).
       </p>
       <div class="insight">
         <strong>Finding:</strong> 51% of failures stem from live-web instability (access restrictions, CAPTCHAs, loading failures) —
-        outside model control. 27% reflect reasoning/knowledge limits, 13% visual grounding errors,
+        outside model control. Note that this analysis is conducted without Browser-Use Stealth Browsers,
+        so access-related failures are more prevalent than in the official evaluation setting.
+        27% reflect reasoning/knowledge limits, 13% visual grounding errors,
         and 9% task definition or judge issues.
         Further progress requires both stronger models and more robust infrastructure.
       </div>
