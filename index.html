@@ -339,70 +339,56 @@
     .best { font-weight: 800; color: var(--blue); }
     .second { text-decoration: underline; }
 
-    /* ─── Findings ───────────────────────────────── */
-    .findings-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
-      gap: 20px;
+    /* ─── Exp title + insight ────────────────────── */
+    .exp-title {
+      font-size: .75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--blue);
+      margin-bottom: 10px;
     }
-    .finding {
+    .insight {
+      background: var(--blue-light);
       border-left: 3px solid var(--blue);
-      padding-left: 18px;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      padding: 10px 14px;
+      margin-top: 14px;
+      font-size: .86rem;
+      color: var(--gray-700);
+      line-height: 1.6;
     }
-    .finding h4 { font-weight: 700; color: var(--navy); font-size: .97rem; margin-bottom: 7px; }
-    .finding p  { font-size: .88rem; color: var(--gray-600); line-height: 1.65; }
+    .insight strong { color: var(--navy); }
 
     /* ─── Case studies carousel ─────────────────── */
-    .carousel {
-      position: relative;
-      overflow: hidden;
+    .carousel-wrapper {
       border: 1px solid var(--gray-200);
       border-radius: var(--radius);
       background: var(--gray-50);
-    }
-    .carousel-track {
-      display: flex;
-      transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .carousel-slide {
-      min-width: 100%;
-      padding: 24px 20px 18px;
-    }
-    .carousel-slide img {
-      width: 100%;
-      border-radius: var(--radius-sm);
-    }
-    .case-caption {
-      font-size: .87rem;
-      color: var(--gray-500);
-      margin-top: 14px;
-      text-align: center;
-      line-height: 1.6;
+      overflow: hidden;
     }
     .carousel-controls {
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 16px;
-      padding: 14px 0 18px;
+      padding: 14px 0 12px;
+      border-bottom: 1px solid var(--gray-200);
     }
     .carousel-btn {
-      width: 36px; height: 36px;
+      width: 32px; height: 32px;
       border-radius: 50%;
       border: 1.5px solid var(--gray-300);
       background: #fff;
       color: var(--gray-600);
-      font-size: .95rem;
+      font-size: .88rem;
       cursor: pointer;
       display: flex; align-items: center; justify-content: center;
       transition: all .18s;
       box-shadow: var(--shadow);
     }
     .carousel-btn:hover { border-color: var(--blue); color: var(--blue); box-shadow: var(--shadow-md); }
-    .carousel-dots {
-      display: flex;
-      gap: 8px;
-    }
+    .carousel-dots { display: flex; gap: 8px; }
     .dot {
       width: 8px; height: 8px;
       border-radius: 50%;
@@ -411,6 +397,28 @@
       transition: background .2s, transform .2s;
     }
     .dot.active { background: var(--blue); transform: scale(1.25); }
+    .carousel {
+      overflow: hidden;
+    }
+    .carousel-track {
+      display: flex;
+      transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .carousel-slide {
+      min-width: 100%;
+      padding: 20px 20px 18px;
+    }
+    .carousel-slide img {
+      width: 100%;
+      border-radius: var(--radius-sm);
+    }
+    .case-caption {
+      font-size: .87rem;
+      color: var(--gray-500);
+      margin-top: 12px;
+      text-align: center;
+      line-height: 1.6;
+    }
 
     /* ─── BibTeX ─────────────────────────────────── */
     #bibtex { background: var(--gray-50); }
@@ -472,7 +480,9 @@
       <li><a href="#abstract">Abstract</a></li>
       <li><a href="#method">Method</a></li>
       <li><a href="#results">Results</a></li>
-      <li><a href="#findings">Findings</a></li>
+      <li><a href="#dynamics">Dynamics</a></li>
+      <li><a href="#ablations">Ablations</a></li>
+      <li><a href="#cases">Cases</a></li>
       <li><a href="#bibtex">BibTeX</a></li>
     </ul>
   </div>
@@ -684,39 +694,6 @@
 </section>
 
 
-<!-- ══ LEARNING DYNAMICS ════════════════════════════════ -->
-<section id="dynamics">
-  <div class="container">
-    <h2 class="section-title">Learning Dynamics</h2>
-
-    <div class="fig-wrap" style="margin-bottom: 28px;">
-      <img src="static/images/raw_success_rate_curves_sft_base.png"
-           alt="MM-GRPO training curves: SFT vs base initialization" />
-      <p class="fig-caption">
-        <strong>Figure 2.</strong>
-        Comparison of MM-GRPO training from SFT and base-model initializations.
-        (a) Average training reward. (b) Average response length.
-        (c) Evaluation success rate (excl. aborted). (d) Success rate improvement by difficulty split on Online-Mind2Web.
-        SFT initialization maintains a consistent ~10% advantage throughout training and yields much larger gains on hard tasks.
-      </p>
-    </div>
-
-    <div class="fig-wrap">
-      <img src="static/images/complete_response_and_proxy_statistics_strict.png"
-           alt="Response length and reasoning pattern analysis during MM-GRPO training" />
-      <p class="fig-caption">
-        <strong>Figure 3.</strong>
-        Diagnosing response-length growth during MM-GRPO.
-        (a) Trajectory length and average interaction steps.
-        (b) Step-level proxy presence rates.
-        (c) Average step-level response length conditioned on reasoning pattern type.
-        MM-GRPO allocates additional reasoning selectively to key steps rather than expanding all responses uniformly.
-      </p>
-    </div>
-  </div>
-</section>
-
-
 <!-- ══ RESULTS TABLE ════════════════════════════════════ -->
 <section id="results">
   <div class="container-wide">
@@ -771,6 +748,48 @@
 </section>
 
 
+<!-- ══ LEARNING DYNAMICS ════════════════════════════════ -->
+<section id="dynamics">
+  <div class="container">
+    <h2 class="section-title">Learning Dynamics</h2>
+
+    <div class="fig-wrap" style="margin-bottom: 28px;">
+      <p class="exp-title">Does supervised warm-start help online RL?</p>
+      <img src="static/images/raw_success_rate_curves_sft_base.png"
+           alt="MM-GRPO training curves: SFT vs base initialization" />
+      <p class="fig-caption">
+        Comparison of MM-GRPO training from SFT and base-model initializations.
+        (a) Average training reward. (b) Average response length.
+        (c) Evaluation success rate (excl. aborted). (d) Success rate improvement by difficulty split on Online-Mind2Web.
+      </p>
+      <div class="insight">
+        <strong>Finding:</strong> SFT initialization maintains a consistent ~10% advantage throughout training
+        and yields much larger gains on hard tasks (+22.3 pts vs. +2.3 pts from base init).
+        Warm-starting places the policy in a better region of behavior space for effective online exploration.
+      </div>
+    </div>
+
+    <div class="fig-wrap">
+      <p class="exp-title">How does RL reshape the agent's reasoning patterns?</p>
+      <img src="static/images/complete_response_and_proxy_statistics_strict.png"
+           alt="Response length and reasoning pattern analysis during MM-GRPO training" />
+      <p class="fig-caption">
+        Diagnosing response-length growth during MM-GRPO.
+        (a) Trajectory length and average interaction steps.
+        (b) Step-level proxy presence rates.
+        (c) Average step-level response length conditioned on reasoning pattern type.
+      </p>
+      <div class="insight">
+        <strong>Finding:</strong> Response-length growth is selective, not uniform.
+        History summarization (+48% length) and blocker diagnosis (+61%) grow most,
+        while non-proxy steps remain nearly stable.
+        The model learns <em>when</em> to reason deeply, rather than simply producing longer outputs everywhere.
+      </div>
+    </div>
+  </div>
+</section>
+
+
 <!-- ══ ABLATIONS ═══════════════════════════════════════ -->
 <section id="ablations">
   <div class="container">
@@ -778,74 +797,46 @@
 
     <div class="two-col" style="margin-bottom: 28px;">
       <div class="fig-wrap">
+        <p class="exp-title">Does the judge model matter for RL stability?</p>
         <img src="static/images/raw_success_rate_curves_judge_rl.png"
              alt="RL training with different judges" />
         <p class="fig-caption">
-          <strong>Figure 4.</strong>
           RL training curves with GPT-4.1, OpenWebRL-Judge-8B, and the base VLM as judge.
-          The distilled judge matches GPT-4.1 dynamics; a naive base VLM causes reward hacking.
         </p>
+        <div class="insight">
+          <strong>Finding:</strong> The distilled OpenWebRL-Judge-8B matches GPT-4.1 training dynamics closely,
+          while a naive base VLM judge causes reward hacking — high training reward but collapsing eval performance.
+          Reliable reward signals are critical for stable online RL.
+        </div>
       </div>
       <div class="fig-wrap">
+        <p class="exp-title">How much does the quality of SFT initialization matter?</p>
         <img src="static/images/raw_success_rate_curves_initilizations.png"
              alt="MM-GRPO from different SFT initializations" />
         <p class="fig-caption">
-          <strong>Figure 5.</strong>
-          MM-GRPO from different SFT initializations.
-          The SFT warm-start quality significantly affects final RL performance.
+          MM-GRPO from different SFT initializations on Online-Mind2Web.
         </p>
+        <div class="insight">
+          <strong>Finding:</strong> The quality of the SFT warm-start significantly affects final RL performance.
+          A better-initialized policy consistently leads to higher evaluation success rates throughout training,
+          highlighting the importance of the initialization stage.
+        </div>
       </div>
     </div>
 
     <div class="fig-wrap" style="max-width: 520px; margin: 0 auto;">
+      <p class="exp-title">What causes failures on live websites?</p>
       <img src="static/images/error_analysis_pie_chart.png"
            alt="Error analysis distribution" />
       <p class="fig-caption">
-        <strong>Figure 6.</strong>
         Distribution of failure modes across 100 manually inspected trajectories on Online-Mind2Web.
-        51% stem from live-web instability; 27% from reasoning/knowledge limits.
       </p>
-    </div>
-  </div>
-</section>
-
-
-<!-- ══ KEY FINDINGS ════════════════════════════════════ -->
-<section id="findings">
-  <div class="container">
-    <h2 class="section-title">Key Findings</h2>
-    <div class="findings-grid">
-
-      <div class="finding" style="border-color:var(--blue);">
-        <h4>SFT warm-start is essential for hard tasks</h4>
-        <p>SFT init gives +10% eval advantage throughout RL training, with +22.3 pts on hard tasks. RL from the base model improves hard tasks by only +2.3 pts.</p>
+      <div class="insight">
+        <strong>Finding:</strong> 51% of failures stem from live-web instability (access restrictions, CAPTCHAs, loading failures) —
+        outside model control. 27% reflect reasoning/knowledge limits, 13% visual grounding errors,
+        and 9% task definition or judge issues.
+        Further progress requires both stronger models and more robust infrastructure.
       </div>
-
-      <div class="finding" style="border-color:var(--teal);">
-        <h4>Reasoning traces serve as long-horizon memory</h4>
-        <p>Removing historical reasoning drops performance by up to 23.7 pts on Online-Mind2Web — the single largest ablation gap in our study.</p>
-      </div>
-
-      <div class="finding" style="border-color:var(--purple);">
-        <h4>Rollout-length curriculum beats fixed budgets</h4>
-        <p>15-step → 30-step curriculum outperforms using either budget alone. Short horizons stabilize early exploration; long horizons handle complex tasks.</p>
-      </div>
-
-      <div class="finding" style="border-color:var(--amber);">
-        <h4>RL drives targeted, not uniform reasoning growth</h4>
-        <p>History summarization (+48% length) and blocker diagnosis (+61%) patterns grow most. Non-proxy steps stay nearly stable — the model learns <em>when</em> to reason deeply.</p>
-      </div>
-
-      <div class="finding" style="border-color:var(--green);">
-        <h4>Distilled judge matches GPT-4.1 at a fraction of the cost</h4>
-        <p>OpenWebRL-Judge-8B achieves 89.8% accuracy / 92.1% F1, saving ~$545 per training run while producing identical RL dynamics to GPT-4.1 supervision.</p>
-      </div>
-
-      <div class="finding" style="border-color:#be185d;">
-        <h4>Textual environment feedback is indispensable</h4>
-        <p>Removing per-step execution feedback costs 5–8 pts across benchmarks. Feedback lets the agent distinguish silent failures from successes without relying on visual diff.</p>
-      </div>
-
     </div>
   </div>
 </section>
@@ -856,39 +847,41 @@
   <div class="container">
     <h2 class="section-title">Case Studies</h2>
 
-    <div class="carousel" id="case-carousel">
-      <div class="carousel-track" id="carousel-track">
-
-        <div class="carousel-slide">
-          <img src="static/images/case_study_birkenstock_clogs_14steps.png"
-               alt="14-step trajectory: Birkenstock men's clogs shopping task" />
-          <p class="case-caption">
-            <strong>Case 1:</strong> "Add the most top-selling Birkenstock's men clogs in brown, size 10–10.5 to my cart." (14 steps)
-          </p>
+    <div class="carousel-wrapper">
+      <div class="carousel-controls">
+        <button class="carousel-btn" onclick="moveCarousel(-1)" aria-label="Previous">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <div class="carousel-dots">
+          <div class="dot active" onclick="goToSlide(0)"></div>
+          <div class="dot"        onclick="goToSlide(1)"></div>
         </div>
+        <button class="carousel-btn" onclick="moveCarousel(1)" aria-label="Next">
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
+      </div>
 
-        <div class="carousel-slide">
-          <img src="static/images/case_study_ikea_sofa_19steps.png"
-               alt="19-step trajectory: IKEA sofa shopping task" />
-          <p class="case-caption">
-            <strong>Case 2:</strong> "Add the cheapest black sofa with at least three seats, a leather finish, and at least four stars to my cart." (19 steps)
-          </p>
+      <div class="carousel" id="case-carousel">
+        <div class="carousel-track" id="carousel-track">
+
+          <div class="carousel-slide">
+            <img src="static/images/case_study_birkenstock_clogs_14steps.png"
+                 alt="14-step trajectory: Birkenstock men's clogs shopping task" />
+            <p class="case-caption">
+              <strong>Case 1:</strong> "Add the most top-selling Birkenstock's men clogs in brown, size 10–10.5 to my cart." (14 steps)
+            </p>
+          </div>
+
+          <div class="carousel-slide">
+            <img src="static/images/case_study_ikea_sofa_19steps.png"
+                 alt="19-step trajectory: IKEA sofa shopping task" />
+            <p class="case-caption">
+              <strong>Case 2:</strong> "Add the cheapest black sofa with at least three seats, a leather finish, and at least four stars to my cart." (19 steps)
+            </p>
+          </div>
+
         </div>
-
       </div>
-    </div>
-
-    <div class="carousel-controls">
-      <button class="carousel-btn" id="prev-btn" onclick="moveCarousel(-1)" aria-label="Previous">
-        <i class="fa-solid fa-chevron-left"></i>
-      </button>
-      <div class="carousel-dots">
-        <div class="dot active" onclick="goToSlide(0)"></div>
-        <div class="dot"        onclick="goToSlide(1)"></div>
-      </div>
-      <button class="carousel-btn" id="next-btn" onclick="moveCarousel(1)" aria-label="Next">
-        <i class="fa-solid fa-chevron-right"></i>
-      </button>
     </div>
 
   </div>
