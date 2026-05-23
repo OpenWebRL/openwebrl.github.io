@@ -109,6 +109,62 @@
     .nav-links a:hover { color: var(--blue); text-decoration: none; }
     @media (max-width: 600px) { .nav-links { display: none; } }
 
+    /* ─── More Research dropdown ─────────────────── */
+    .more-research {
+      position: relative;
+    }
+    .more-research-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: none;
+      border: 1.5px solid var(--gray-300);
+      border-radius: 6px;
+      color: var(--gray-600);
+      font-size: .85rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .more-research-btn:hover { border-color: var(--blue); color: var(--blue); }
+    .more-research-btn .arrow {
+      width: 0; height: 0;
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+      border-top: 5px solid currentColor;
+      transition: transform .2s;
+    }
+    .more-research-btn.active .arrow { transform: rotate(180deg); }
+    .more-research-dropdown {
+      display: none;
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      min-width: 300px;
+      background: #fff;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-lg);
+      z-index: 200;
+      overflow: hidden;
+    }
+    .more-research-dropdown.show { display: block; }
+    .more-research-dropdown a {
+      display: block;
+      padding: 12px 16px;
+      font-size: .87rem;
+      font-weight: 500;
+      color: var(--gray-800);
+      border-bottom: 1px solid var(--gray-100);
+      transition: background .15s;
+      text-decoration: none;
+      line-height: 1.4;
+    }
+    .more-research-dropdown a:last-child { border-bottom: none; }
+    .more-research-dropdown a:hover { background: var(--blue-light); color: var(--blue); }
+
     /* ─── Hero ───────────────────────────────────── */
     #hero {
       background: linear-gradient(155deg, #0b1d3a 0%, #16325e 45%, #1a4a8a 100%);
@@ -484,6 +540,19 @@
       <li><a href="#cases">Cases</a></li>
       <li><a href="#bibtex">BibTeX</a></li>
     </ul>
+    <div class="more-research">
+      <button class="more-research-btn" onclick="toggleMoreResearch()" aria-expanded="false">
+        More Research <span class="arrow"></span>
+      </button>
+      <div class="more-research-dropdown" id="moreResearchDropdown">
+        <a href="https://gui-libra.github.io" target="_blank" rel="noopener">
+          GUI-Libra: Training Native GUI Agents to Reason and Act
+        </a>
+        <a href="https://microsoft.github.io/GUI-Actor/" target="_blank" rel="noopener">
+          GUI-Actor: Coordinate-Free Visual Grounding for GUI Agents
+        </a>
+      </div>
+    </div>
   </div>
 </nav>
 
@@ -931,6 +1000,21 @@
 
 
 <script>
+  /* ── More Research dropdown ── */
+  function toggleMoreResearch() {
+    const btn = document.querySelector('.more-research-btn');
+    const dropdown = document.getElementById('moreResearchDropdown');
+    const isOpen = dropdown.classList.toggle('show');
+    btn.classList.toggle('active', isOpen);
+    btn.setAttribute('aria-expanded', isOpen);
+  }
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.more-research')) {
+      document.getElementById('moreResearchDropdown').classList.remove('show');
+      document.querySelector('.more-research-btn').classList.remove('active');
+    }
+  });
+
   /* ── Carousel ── */
   let currentSlide = 0;
   const totalSlides = 2;
