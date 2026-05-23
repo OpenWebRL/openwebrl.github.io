@@ -145,7 +145,7 @@
     }
 
     #hero h1 {
-      font-size: clamp(1.65rem, 4.2vw, 2.6rem);
+      font-size: clamp(1.9rem, 4.8vw, 3.0rem);
       font-weight: 800;
       line-height: 1.2;
       max-width: 840px;
@@ -188,9 +188,9 @@
       color: rgba(255,255,255,.78);
     }
     .affil img {
-      height: 20px;
+      height: 28px;
       filter: brightness(0) invert(1);
-      opacity: .8;
+      opacity: .85;
     }
 
     .hero-buttons {
@@ -224,39 +224,45 @@
     }
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 14px;
+    }
+    @media (max-width: 700px) {
+      .stats-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 440px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
     }
     .stat-card {
       background: #fff;
       border: 1px solid var(--gray-200);
       border-radius: var(--radius);
-      padding: 22px 18px;
+      padding: 16px 12px;
       text-align: center;
       box-shadow: var(--shadow);
       transition: transform .18s, box-shadow .18s;
     }
     .stat-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
     .stat-num {
-      font-size: 2.3rem;
+      font-size: 1.85rem;
       font-weight: 800;
       color: var(--blue);
       line-height: 1;
       letter-spacing: -.03em;
-      margin-bottom: 6px;
+      margin-bottom: 5px;
     }
-    .stat-num sup { font-size: 1rem; font-weight: 700; vertical-align: super; }
+    .stat-num sup { font-size: .85rem; font-weight: 700; vertical-align: super; }
     .stat-label {
-      font-size: .8rem;
+      font-size: .72rem;
       font-weight: 700;
       color: var(--gray-500);
       text-transform: uppercase;
-      letter-spacing: .06em;
+      letter-spacing: .05em;
     }
     .stat-sub {
-      font-size: .76rem;
+      font-size: .7rem;
       color: var(--gray-400);
-      margin-top: 4px;
+      margin-top: 3px;
     }
 
     /* ─── Abstract ───────────────────────────────── */
@@ -489,7 +495,7 @@
       Baolin Peng<sup>2</sup>,&ensp;Huan Zhang<sup>1</sup>,&ensp;Tong Zhang<sup>1</sup>,&ensp;Jianfeng Gao<sup>2</sup>
     </p>
     <p class="author-note">
-      * Equal contribution&ensp;·&ensp;† Project lead (UIUC)&ensp;·&ensp;‡ Project lead (Microsoft)
+      * Equal contribution&ensp;·&ensp;‡ Project lead: Qianhui Wu (Microsoft)
     </p>
 
     <div class="affiliations">
@@ -772,44 +778,33 @@
 
     <div class="two-col" style="margin-bottom: 28px;">
       <div class="fig-wrap">
-        <img src="static/images/ablations_dynamicsampling_ppoepoch.png"
-             alt="Ablation: dynamic sampling and PPO epochs" />
-        <p class="fig-caption">
-          <strong>Figure 4.</strong>
-          Ablation on (a–b) trajectory-level dynamic sampling and (c–d) PPO epochs.
-          Dynamic sampling stabilizes training; 2 PPO epochs give the best balance.
-        </p>
-      </div>
-      <div class="fig-wrap">
         <img src="static/images/raw_success_rate_curves_judge_rl.png"
              alt="RL training with different judges" />
         <p class="fig-caption">
-          <strong>Figure 5.</strong>
+          <strong>Figure 4.</strong>
           RL training curves with GPT-4.1, OpenWebRL-Judge-8B, and the base VLM as judge.
-          The distilled judge matches GPT-4.1 dynamics while a naive base VLM causes reward hacking.
+          The distilled judge matches GPT-4.1 dynamics; a naive base VLM causes reward hacking.
+        </p>
+      </div>
+      <div class="fig-wrap">
+        <img src="static/images/raw_success_rate_curves_sft_base.png"
+             alt="MM-GRPO from different initializations" />
+        <p class="fig-caption">
+          <strong>Figure 5.</strong>
+          MM-GRPO from SFT vs. base-model initialization.
+          SFT warm-start maintains a consistent ~10% advantage and yields much larger gains on hard tasks.
         </p>
       </div>
     </div>
 
-    <div class="two-col">
-      <div class="fig-wrap">
-        <img src="static/images/raw_success_rate_curves_rejectsampling.png"
-             alt="MM-GRPO vs online filtered BC baseline" />
-        <p class="fig-caption">
-          <strong>Figure 6.</strong>
-          MM-GRPO vs. online filtered behavior cloning (BC).
-          Pure imitation of online successes collapses in evaluation; MM-GRPO maintains stable improvement.
-        </p>
-      </div>
-      <div class="fig-wrap">
-        <img src="static/images/error_analysis_pie_chart.png"
-             alt="Error analysis distribution" />
-        <p class="fig-caption">
-          <strong>Figure 7.</strong>
-          Distribution of failure modes across 100 manually inspected trajectories on Online-Mind2Web.
-          51% stem from live-web instability; 27% from reasoning/knowledge limits.
-        </p>
-      </div>
+    <div class="fig-wrap" style="max-width: 520px; margin: 0 auto;">
+      <img src="static/images/error_analysis_pie_chart.png"
+           alt="Error analysis distribution" />
+      <p class="fig-caption">
+        <strong>Figure 6.</strong>
+        Distribution of failure modes across 100 manually inspected trajectories on Online-Mind2Web.
+        51% stem from live-web instability; 27% from reasoning/knowledge limits.
+      </p>
     </div>
   </div>
 </section>
