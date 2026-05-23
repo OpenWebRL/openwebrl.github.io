@@ -817,9 +817,10 @@
           MM-GRPO from different SFT initializations on Online-Mind2Web.
         </p>
         <div class="insight">
-          <strong>Finding:</strong> The quality of the SFT warm-start significantly affects final RL performance.
-          A better-initialized policy consistently leads to higher evaluation success rates throughout training,
-          highlighting the importance of the initialization stage.
+          <strong>Finding:</strong> More SFT data or longer imitation training does not automatically yield better RL performance.
+          The 0.4K/3-epoch default outperforms both a lightweight 0.4K/1-epoch init and a larger 1.9K/3-epoch init.
+          Heavier imitation training on a less curated distribution may reduce policy plasticity and limit RL's room to improve.
+          The key is a <em>balanced</em> warm start: strong enough for productive exploration, but not over-imitated.
         </div>
       </div>
     </div>
