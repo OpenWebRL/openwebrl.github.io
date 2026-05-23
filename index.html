@@ -780,10 +780,13 @@
         (c) Average step-level response length conditioned on reasoning pattern type.
       </p>
       <div class="insight">
-        <strong>Finding:</strong> Response-length growth is selective, not uniform.
-        History summarization (+48% length) and blocker diagnosis (+61%) grow most,
-        while non-proxy steps remain nearly stable.
-        The model learns <em>when</em> to reason deeply, rather than simply producing longer outputs everywhere.
+        <strong>Finding:</strong> MM-GRPO increases <em>both the frequency and the length</em> of four recurring reasoning patterns:
+        history summarization (presence rate 14.5%→21.4%, length 332→542 tokens),
+        blocker diagnosis (14.2%→23.7%, 273→440 tokens),
+        retry-plan reasoning, and condition-proof reasoning.
+        By contrast, non-proxy steps remain nearly stable (282→325 tokens).
+        The model learns <em>when</em> to reason deeply — allocating additional verbosity selectively to steps that matter,
+        rather than simply producing longer outputs everywhere.
       </div>
     </div>
   </div>
