@@ -594,11 +594,14 @@
       <a class="btn btn-ghost" href="https://github.com/OpenWebRL" target="_blank" rel="noopener">
         <i class="fa-brands fa-github"></i> Code
       </a>
-      <a class="btn btn-ghost btn-dim" href="#">
+      <a class="btn btn-ghost" href="https://huggingface.co/OpenWebRL" target="_blank" rel="noopener">
         <i class="fa-solid fa-database"></i> Data
       </a>
       <a class="btn btn-ghost" href="https://huggingface.co/OpenWebRL" target="_blank" rel="noopener">
         <i class="fa-solid fa-cube"></i> Models
+      </a>
+      <a class="btn btn-ghost" href="https://github.com/microsoft/Orchard" target="_blank" rel="noopener">
+        <i class="fa-solid fa-boxes-stacked"></i> Orchard Env
       </a>
     </div>
 
@@ -758,6 +761,16 @@
         </p>
       </div>
 
+    </div>
+
+    <div class="insight" style="max-width: 900px; margin: 24px auto 0;">
+      OpenWebRL's infrastructure supports both lightweight local-process execution and isolated sandbox execution.
+      The sandbox setup uses <a href="https://github.com/microsoft/Orchard" target="_blank" rel="noopener">Orchard Env</a>,
+      a Kubernetes-native service that provides sandbox lifecycle management, command execution, file I/O, network policy,
+      and a REST API, enabling hundreds of concurrent sandboxed browser environments in our setup. In Online-Mind2Web,
+      running with the Orchard sandbox reduced the blocked-trajectory rate from <strong>25.7%</strong> with local processes
+      to <strong>17.7%</strong>. This reliability advantage is expected to be even more important for online RL, where
+      group-size rollouts amplify repeated access to the same websites.
     </div>
   </div>
 </section>
