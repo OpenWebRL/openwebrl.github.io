@@ -588,7 +588,7 @@
     </div>
 
     <div class="hero-buttons">
-      <a class="btn btn-white btn-dim" href="#">
+      <a class="btn btn-white btn-dim" href="https://arxiv.org/abs/2606.02031" target="_blank" rel="noopener">
         <i class="fa-regular fa-file-pdf"></i> Paper
       </a>
       <a class="btn btn-ghost" href="https://github.com/OpenWebRL/OpenWebRL" target="_blank" rel="noopener">
@@ -986,11 +986,14 @@
       <button class="copy-btn" id="copy-btn" onclick="copyBib()">
         <i class="fa-regular fa-copy"></i> Copy
       </button>
-<span class="bb">@article{</span><span class="bk">yang2026openwebrl</span><span class="bb">,</span>
-  <span class="bf">title</span>   = <span class="bb">{</span><span class="bv">OpenWebRL: Demystifying Online Multi-turn Reinforcement Learning for Visual Web Agents</span><span class="bb">},</span>
-  <span class="bf">author</span>  = <span class="bb">{</span><span class="bv">Rui Yang and Qianhui Wu and Yuxi Chen and Hao Bai and Wenlin Yao and Hao Cheng and Baolin Peng and Huan Zhang and Tong Zhang and Jianfeng Gao</span><span class="bb">},</span>
-  <span class="bf">journal</span> = <span class="bb">{</span><span class="bv">arXiv preprint</span><span class="bb">},</span>
-  <span class="bf">year</span>    = <span class="bb">{</span><span class="bv">2026</span><span class="bb">}</span>
+<span class="bb">@misc{</span><span class="bk">yang2026openwebrldemystifyingonlinemultiturn</span><span class="bb">,</span>
+  <span class="bf">title</span>         = <span class="bb">{</span><span class="bv">OpenWebRL: Demystifying Online Multi-turn Reinforcement Learning for Visual Web Agents</span><span class="bb">},</span>
+  <span class="bf">author</span>        = <span class="bb">{</span><span class="bv">Rui Yang and Qianhui Wu and Yuxi Chen and Hao Bai and Wenlin Yao and Hao Cheng and Baolin Peng and Huan Zhang and Tong Zhang and Jianfeng Gao</span><span class="bb">},</span>
+  <span class="bf">year</span>          = <span class="bb">{</span><span class="bv">2026</span><span class="bb">},</span>
+  <span class="bf">eprint</span>        = <span class="bb">{</span><span class="bv">2606.02031</span><span class="bb">},</span>
+  <span class="bf">archivePrefix</span> = <span class="bb">{</span><span class="bv">arXiv</span><span class="bb">},</span>
+  <span class="bf">primaryClass</span>  = <span class="bb">{</span><span class="bv">cs.LG</span><span class="bb">},</span>
+  <span class="bf">url</span>           = <span class="bb">{</span><span class="bv">https://arxiv.org/abs/2606.02031</span><span class="bb">}</span>
 <span class="bb">}</span>
     </div>
   </div>
@@ -1051,11 +1054,14 @@
 
   /* ── BibTeX copy ── */
   function copyBib() {
-    const text = `@article{yang2026openwebrl,
-  title   = {OpenWebRL: Demystifying Online Multi-turn Reinforcement Learning for Visual Web Agents},
-  author  = {Rui Yang and Qianhui Wu and Yuxi Chen and Hao Bai and Wenlin Yao and Hao Cheng and Baolin Peng and Huan Zhang and Tong Zhang and Jianfeng Gao},
-  journal = {arXiv preprint},
-  year    = {2026}
+    const text = `@misc{yang2026openwebrldemystifyingonlinemultiturn,
+  title={OpenWebRL: Demystifying Online Multi-turn Reinforcement Learning for Visual Web Agents},
+  author={Rui Yang and Qianhui Wu and Yuxi Chen and Hao Bai and Wenlin Yao and Hao Cheng and Baolin Peng and Huan Zhang and Tong Zhang and Jianfeng Gao},
+  year={2026},
+  eprint={2606.02031},
+  archivePrefix={arXiv},
+  primaryClass={cs.LG},
+  url={https://arxiv.org/abs/2606.02031}
 }`;
     navigator.clipboard.writeText(text).then(() => {
       const btn = document.getElementById('copy-btn');
